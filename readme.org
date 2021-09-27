@@ -10,9 +10,8 @@ the first file to load is =init0.py=, which will load several *core* files
 : ./hit.py load.dump init0.py    # inspect init file
 
 ** user init file
-config file has the form =config[0-9]?.py=, searched in =pwd= and =_hit_path_=, the single =[0-9]= digit is interpreted as version number,
-the largest versioned file will be regarded as config file.
-: cfg=c.py ./hit.py <cmd...>         # use c.py as alternative config file.
+=init0.py= will add =~/.hit= to load search path, and load =user_init.py=.
+You can create =~/.hit/user_init.py= as your user init file.
 
 ** magic call
 : ./hit.py a.b.c a1 k1=v1
