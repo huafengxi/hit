@@ -1,0 +1,57 @@
+#+Title: easy scripting
+hit.py, use =load= and =call= to easz scripting: just load extension, then call what you mean.
+
+** the load
+=load('foo')= will search =foo.py= in all dir listed by =load.spath=, then exec the found file.
+: ./hit.py dump load.spath load.load_list  # show search path and load file list
+
+** init load
+the first file to load is =init0.py=, which will load several *core* files
+: ./hit.py load.dump init0.py    # inspect init file
+
+** user init file
+config file has the form =config[0-9]?.py=, searched in =pwd= and =_hit_path_=, the single =[0-9]= digit is interpreted as version number,
+the largest versioned file will be regarded as config file.
+: cfg=c.py ./hit.py <cmd...>         # use c.py as alternative config file.
+
+** magic call
+: ./hit.py a.b.c a1 k1=v1
+do *magic call* by two steps:
+1. =eval('a.b.c')= or =globals()['a']['b']['c']= whichever succeed, save result as =target=.
+2. call =target(*args, **kw)= if it is callable or call =magic_xxx(env, cmd, args, kw)= if =target=  matches =!xxx: cmd...=, whichever succeed is =result=.
+: ./hit.py dump MagicMap  # list all magic_xxx handlers
+
+** string interpolate
+any =$xxx= or =${xxx}= in the =target= or =result= string will be replaced by the result of *magic call* of =xxx=.
+
+** call after load
+: ./hit.py a.py ...
+first =load('a.py')=, then do *magic call* for rest args.
+
+** non python code
+=load(...)= can handle non valid python code after *init load*, any non python line will be interpret by =Interp(...)=.
+: ./hit.py dump LineMatch           # show Interp rule
+: ./hit.py load.annote a.py         # show Interp(...) wrapped file.
+: ./hit.py load.parse.plist         # show python/non-python mixed parser rule
+
+** interactive REPL
+: ./hit.py        # interactive REPL, line is interpreted by =Interp=.
+
+** code injection before main
+: ./hit.py dump a b @a=v1 @b=v2 # execute stmt before magic call
+
+** multiple cmd in one line
+: ./hit.py seq a b @a=v1 @b=v2
+
+# FAQ
+** A.xxx infinity loop
+: A.xxx = 'b.xxx' # direct to A.b.xxx, but b.xxx is nil
+
+** call_kw problem
+=call_kw= make it is hard to retrive the real dict to represent the object, for example
+when the epath is =A.b.call_kw=, you need to remove =call_kw= to get the real object dict.
+
+** inplace calc
+=${{!calc: $xxx + 123}}=
+or
+=${xxx+123}=

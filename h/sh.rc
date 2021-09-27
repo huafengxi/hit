@@ -1,0 +1,23 @@
+function i() {
+    if [ -z $hit_src ]; then
+        echo "hit_src not set, when execute function 'i'"
+        return 1
+    elif [[ "$hit_src" == "http"* ]]; then
+        python <(curl -s -N $hit_src) $@
+    elif [ -f $hit_src ]; then
+        python $hit_src $@
+    fi
+}
+
+function sshpass() {
+    ~/bin/sshpass -f ~/bin/my.pass $@
+}
+shopt -s expand_aliases
+
+function is_valid_shell_cmd() {
+    alias $1 || declare -F $1 || which $1
+} &>/dev/null
+
+function list_shell_completion() {
+    compgen -A function -abck
+}
