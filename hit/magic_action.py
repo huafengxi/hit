@@ -8,6 +8,7 @@ def popen_wrapper(ns, cmd, input=None, output=None, **kw):
     def format_input(input):
         if not input: return ''
         else: return ' <<<%s'%(input)
+    if kw.get('trace_sh'): print '#', cmd
     return ('_dryrun_' in sys.argv) and '%s%s'%(cmd, format_input(input)) or popen(cmd, input=input, output=output, **kw)
 
 @MagicMap.regist
