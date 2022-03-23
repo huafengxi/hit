@@ -64,8 +64,9 @@ def table_format(header, rows):
     lines = [ruler(lens)] + [format_row(header, lens)] + [ruler(lens)] + [format_row(row, lens) for row in rows] + [ruler(lens)]
     return '\n'.join(lines)
 
-def print_sql_result((header, rows)):
-    print table_format(header, rows)
+def print_sql_result(header_and_rows):
+    (header, rows) = header_and_rows
+    print(table_format(header, rows))
 
 # psql
 def parse_text_table(output):
@@ -126,16 +127,16 @@ class SqlConn:
     def queryp(self, sql, d):
         return print_sql_result(self.query(sql, d))
 
-import tsql
-class TConn:
-    def __init__(self, path, env=globals()):
-        self.conn = tsql.TConn(path, env)
-    def close(self):
-        self.conn.close()
-    def query(self, sql, env):
-        return self.conn.query(sql, env)
-    def queryp(self, sql, env):
-        return self.conn.queryp(sql, env)
+#import tsql
+#class TConn:
+#    def __init__(self, path, env=globals()):
+#        self.conn = tsql.TConn(path, env)
+#    def close(self):
+#        self.conn.close()
+#    def query(self, sql, env):
+#        return self.conn.query(sql, env)
+#    def queryp(self, sql, env):
+#        return self.conn.queryp(sql, env)
 
 comp_sql_conn = None
 
@@ -163,7 +164,7 @@ class DummyConn:
         pass
     def close(self): pass
     def query(self, sql, env):
-        print sql
+        print(sql)
         return ['sql'], [sql]
     def queryp(self, sql, env):
         return self.query(sql, env)

@@ -28,6 +28,8 @@ def on_popen_error(kw, cmd, e):
 
 def popen(cmd, input=None, output=True, timeout=None, **kw):
     if 'NoException' in cmd: kw['ignore_shell_error'] = True
+    if type(input) == str:
+        input = input.encode('utf-8')
     if type(timeout) == str:
         timeout = float(timeout)
     logger.trace('cmd=%s, input=%s, output=%s timeout=%s', repr(cmd), repr(input), output, str(timeout))
