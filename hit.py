@@ -37,6 +37,9 @@ def parse_cmd_args(args):
 
 import pprint
 from logger import logger
+
+def myexec(stmt, env=globals()):
+     exec(stmt, env)
 def hit_run(argv):
     special_opts = ['_dryrun_']
     def get_and_remove(kw, k, v):
@@ -49,8 +52,10 @@ def hit_run(argv):
             except: return x
         def exec_stmt(x):
             m = re.match('@(\w+)=(.*)', x)
-            if m: globals()[m.group(1)] = safe_eval(m.group(2))
-            else: exec(x[1:], globals())
+            if m:
+                globals()[m.group(1)] = safe_eval(m.group(2))
+            else:
+                myexec(x[1:])
         new_argv = []
         for x in argv:
             if x.startswith('@'): exec_stmt(x)

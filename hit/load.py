@@ -31,9 +31,10 @@ class CallerInfo:
     def __repr__(self):
         return 'file={} lineno={} func={} code={}'.format(self.filename, self.lineno, self.function, self.code)
 
+def myexec(stmt, env=globals()):
+     exec(stmt, env)
 import os
 import re, string
-import urllib.request, urllib.error, urllib.parse
 import tfile
 from logger import logger
 class Load:
@@ -66,7 +67,7 @@ class Load:
             rpath, content = res
             self.load_list.append(rpath)
             self.on_load(path, rpath, content)
-            exec(compile(self.parse(content, **self.opt), rpath, mode='exec'), self.env)
+            myexec(compile(self.parse(content, **self.opt), rpath, mode='exec'), self.env)
     def read(self, path):
         def make_local_reader(dir):
             def read(f):
@@ -89,8 +90,6 @@ class Load:
         if type(f) == str:
             if os.path.exists(f):
                 return f
-            elif re.match('http:|https:', f):
-                text = urllib.request.urlopen(url, timeout=3).read()
             else:
                 res = self.read(f)
                 if res: text = res[1]

@@ -1,4 +1,7 @@
-import subprocess
+if sys.version_info[0] < 3:
+    import mysubprocess32 as subprocess
+else:
+    import subprocess
 def popen_win32(cmd, input, output, timeout):
     no_tty = sys.stdin == os.devnull
     p = subprocess.Popen(cmd, shell=True, stdin=(input or no_tty) and subprocess.PIPE or None, stdout=(output or no_tty) and subprocess.PIPE or None, stderr=subprocess.STDOUT)
