@@ -8,7 +8,7 @@ def sub(template, ns, max_iter=50):
     def format_ret(x, orig):
         if (type(x) == list or type(x) == tuple) and all(type(x) == str for x in x):
             return ' '.join(x)
-        if x == None or type(x) != str and type(x) != unicode and type(x) != int and type(x) != float and type(x) != long:
+        if x == None or type(x) != str and type(x) != int and type(x) != float and type(x) != long:
             return orig
         else:
             return str(x)
