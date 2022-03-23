@@ -62,7 +62,7 @@ class PyMixFormater:
     def out(self, c, p):
         self.output.append((c, p))
     def format(self, annote):
-        def format_line((c, p)): return ('{}#{}'.format(c, p) if annote else c) + '\n'
+        def format_line(c_p): (c, p) = c_p; return ('{}#{}'.format(c, p) if annote else c) + '\n'
         return ''.join(map(format_line, self.output))
 
 class PyMixParser:
@@ -93,7 +93,7 @@ class PyMixParser:
             return text
         o = PyMixFormater(self.wrap_tpl, self.comment_char)
         for t, c, p in self.parse_text(text):
-            o.handle(t, c, p.func_name)
+            o.handle(t, c, p.__name__)
         return o.format(annote)
     def __call__(self, text, **kw):
         return self.parse(text, **kw)
@@ -148,12 +148,12 @@ def literal(self, text):
     return parse_regexp(text, '^.*?\n')
 
 def help():
-    print __doc__
+    print(__doc__)
 
 if __name__ == '__main__':
     not sys.stdin.isatty() or help() or sys.exit(1)
     text = sys.stdin.read()
     pymix_parse.comment_char = os.getenv('comment_char', '#')
     out = pymix_parse.parse(text, annote=True)
-    print out
+    print(out)
     parser.suite(out)

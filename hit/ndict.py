@@ -49,7 +49,7 @@ def build_dict(*args, **kw):
             new_dict.update(d)
         new_dict.update(kw)
         return new_dict
-    return dict_filter(lambda (k,v): not k.startswith('__'), dict_updated(*args, **kw))
+    return dict_filter(lambda k_v: not k_v[0].startswith('__'), dict_updated(*args, **kw))
 
 class ChainBuilder:
     def __init__(self):

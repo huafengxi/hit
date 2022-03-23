@@ -30,6 +30,6 @@ def sub(template, ns, max_iter=50):
 
 def handle_interpolate(expr, ns):
     if expr.count('\n') > 0:
-        exec expr in globals(), prepare_eval_env(ns)
+        exec(expr, globals(), prepare_eval_env(ns))
         return ''
     return CALL(ns, expr, [], dict(_tlog_=3))

@@ -33,7 +33,7 @@ class CallerInfo:
 
 import os
 import re, string
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import tfile
 from logger import logger
 class Load:
@@ -66,15 +66,15 @@ class Load:
             rpath, content = res
             self.load_list.append(rpath)
             self.on_load(path, rpath, content)
-            exec compile(self.parse(content, **self.opt), rpath, mode='exec') in self.env
+            exec(compile(self.parse(content, **self.opt), rpath, mode='exec'), self.env)
     def read(self, path):
         def make_local_reader(dir):
             def read(f):
                 p = os.path.expanduser(string.Template(os.path.join(dir, f)).safe_substitute(base=self.base_path))
-                if os.path.exists(p): return p, file(p).read()
+                if os.path.exists(p): return p, open(p).read()
             return read
         def get_reader(d):
-            if type(d) == str or type(d) == unicode:
+            if type(d) == str or type(d) == str:
                 return make_local_reader(d)
             else:
                 return d
@@ -90,7 +90,7 @@ class Load:
             if os.path.exists(f):
                 return f
             elif re.match('http:|https:', f):
-                text = urllib2.urlopen(url, timeout=3).read()
+                text = urllib.request.urlopen(url, timeout=3).read()
             else:
                 res = self.read(f)
                 if res: text = res[1]
@@ -101,8 +101,8 @@ class Load:
     def dump(self, *path_list):
         for p in path_list:
             rp, content = self.read(p) or ('not-found', '')
-            print '### file={} path={} ###'.format(p, rp)
-            print content
+            print('### file={} path={} ###'.format(p, rp))
+            print(content)
     def annote(self, text=None, **kw):
         fd = text and file(text) or sys.stdin
-        print self.parse(fd.read(), annote=True, **self.opt)
+        print(self.parse(fd.read(), annote=True, **self.opt))

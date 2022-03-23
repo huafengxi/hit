@@ -64,7 +64,7 @@ def magic_str(ns, str, args, kw):
     handler_name, handler_args, str_content = m.groups()
     handler = MagicMap.get('magic_' + handler_name, None)
     if not callable(handler): return str
-    _args, _kw = parse_cmd_args(filter(None, sub(handler_args or '', ns).split(',')))
+    _args, _kw = parse_cmd_args([_f for _f in sub(handler_args or '', ns).split(',') if _f])
     return handler(ns, str_content.strip(), (_args + list(args)), dict_updated(_kw, kw))
 
 ### deps: epath(d) find(ns, path) sub(tpl, ns)

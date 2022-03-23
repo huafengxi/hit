@@ -42,7 +42,7 @@ class MatchList(list):
     def meal(self, expr):
         while True:
             if isinstance(expr, EvalDict):
-                expr = self.match(dict((k, self.meal(v)) for k, v in expr.items()))
+                expr = self.match(dict((k, self.meal(v)) for k, v in list(expr.items())))
             elif isinstance(expr, EvalList):
                 expr = [self.meal(i) for i in expr]
             else:
@@ -53,7 +53,7 @@ class FuncMap(dict):
     def __init__(self):
        dict.__init__(self) 
     def regist(self, func):
-        self[func.func_name] = func
+        self[func.__name__] = func
         return func
 
 import re
@@ -86,4 +86,4 @@ if __name__ == '__main__':
         if op != 'sqrt': raise NotMatch()
         return E(op='add', x=E(op='prod', x=x, y=x), y=E(op='prod', x=y,y=y))
 
-    print X(op='sqrt', x=3, y=4)
+    print(X(op='sqrt', x=3, y=4))

@@ -13,7 +13,7 @@ import atexit
 import traceback
 import pprint
 import parser
-import mysubprocess32 as subprocess
+import subprocess
 import copy
 import tfile
 
@@ -57,19 +57,19 @@ class BaseInterp:
                 ret = eval(code, globals, locals)
             else:
                 code = compile(cmd, tpath, 'exec')
-                exec code in globals, locals
+                exec(code, globals, locals)
                 ret = None
         except Exception as e:
-            print e, traceback.format_exc()
+            print(e, traceback.format_exc())
         return ret
 
     def on_exception(self, line, e):
-        print 'Console Exception: %s'%(e)
-        print traceback.format_exc()
+        print('Console Exception: %s'%(e))
+        print(traceback.format_exc())
 
     def pprint(self, line, ret):
         if type(ret) == str:
-            print ret
+            print(ret)
         elif ret == None:
             pass
         else:
@@ -79,7 +79,7 @@ class BaseInterp:
         try:
             return self.get_matched(prefix, full_prefix)
         except:
-            print traceback.format_exc()
+            print(traceback.format_exc())
         return []
 
     def complete(self, prefix, index):
@@ -109,13 +109,13 @@ class Console:
     def read_lines(self, prompt):
         lines = []
         self.indent = ''
-        line = raw_input(prompt)
+        line = input(prompt)
         lines.append(line)
         if not line.endswith(':'):
             return lines
         self.indent = '    '
         while True:
-            line = raw_input(('.' * (len(prompt) - 1)) + ' ')
+            line = input(('.' * (len(prompt) - 1)) + ' ')
             if not line.strip():
                 break
             self.indent = re.match(' *', line).group(0)
@@ -131,10 +131,10 @@ class Console:
             try:
                 lines = self.read_lines(interp.get_prompt())
             except EOFError:
-                print 'exit'
+                print('exit')
                 return 'done'
             except KeyboardInterrupt:
-                print '\n receive C-c, reload console, use ctrl-D to exit'
+                print('\n receive C-c, reload console, use ctrl-D to exit')
                 self.on_reload()
                 lines = ['reload_console']
             lines = '\n'.join(lines).strip()

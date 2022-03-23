@@ -103,7 +103,7 @@ class Flow(FlowLogger):
         idx = idx_str[len(self.cl)-1]
         logger.debug('cf=%s idx=%s', cf, idx)
         if cf == '-':
-            print '%s: %s'%(idx, cmd)
+            print('%s: %s'%(idx, cmd))
         return ('-%s'%(idx) not in cf) and (idx in cf or '.' in cf)
     def run_with_filt(self, env, cmd):
         if not self.filt(cmd): return 'skip %s'%(cmd)

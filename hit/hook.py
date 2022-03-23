@@ -7,6 +7,6 @@ class Hook:
     def __call__(self, *args, **kw):
         result = []
         for h in self.hook:
-            logger.debug('hook: %s', h.func_name)
+            logger.debug('hook: %s', h.__name__)
             result.append(h(*args, **kw))
         return result

@@ -3,7 +3,7 @@ def wait_process(p, flush=True):
     if not flush: return p.communicate()[0]
     lines = []
     for line in iter(p.stdout.readline, ""):
-        print line.rstrip()
+        print(line.rstrip())
         lines.append(line)
     p.stdout.close()
     p.wait()
@@ -14,7 +14,7 @@ class bg_exec:
         self.cmd = sub(cmd, env)
         try:
             self.p = subprocess.Popen(self.cmd, shell = True, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, executable='/bin/bash')
-	    self.out = None
+            self.out = None
             def bg_run():
                 self.out = wait_process(self.p, flush)
             self.bg_thread = threading.Thread(target = bg_run)

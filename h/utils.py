@@ -5,14 +5,14 @@ import shlex
 def dict_merge(d1, d2):
     if type(d1) != dict: return d2
     if type(d2) != dict: return d1
-    for k,v in d2.items():
+    for k,v in list(d2.items()):
         d1[k] = dict_merge(d1.get(k), v)
     return d1
 
 def list_attr(**kw):
-    for key in kw.keys():
+    for key in list(kw.keys()):
         if not key.startswith('_'):
-            print key
+            print(key)
 
 def get_ts_str(ts=None):
     if ts == None: ts = time.time()
@@ -36,10 +36,10 @@ class StatReport:
     def __enter__(self):
         self.start()
     def __exit__(self, *args):
-        print 'duration: %4.2fms'%(1000 * (time.time() - self.start_time))
+        print('duration: %4.2fms'%(1000 * (time.time() - self.start_time)))
     def __iter__(self):
         return self
-    def next(self):
+    def __next__(self):
         if time.time() > self.time_limit:
             raise StopIteration()
         self.end()
@@ -61,7 +61,7 @@ class StatReport:
         self.cost_time += cur - self.start_time
         self.count += 1
         if cur > self.last_report + self.interval:
-            print "%s qps=%d rt=%4.2fms"%(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(cur)), self.count, 1000 * self.cost_time/(self.count + 1))
+            print("%s qps=%d rt=%4.2fms"%(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(cur)), self.count, 1000 * self.cost_time/(self.count + 1)))
             self.cost_time, self.count = 0.0, 0.0
             self.last_report = cur #(_log_=0)
 
@@ -94,7 +94,7 @@ def magic_choose(d, cmd, args, kw):
     cmd_map = dict(seq)
     cmd_list, result = [], []
     for c in args:
-        if c in cmd_map.keys():
+        if c in list(cmd_map.keys()):
             cmd_list.append(c)
     for c in cmd_list:
         args.remove(c)
@@ -119,10 +119,10 @@ def first_valid(*args, **kw):
 
 def load_file_vars(__path__, __globals__=globals()):
     try:
-        execfile(__path__, __globals__, locals())
+        exec(compile(open(__path__, "rb").read(), __path__, 'exec'), __globals__, locals())
     except Exception as __e:
         raise Fail('load file %s failed!'%(__path__), __e)
-    return dict((k, v) for k,v in locals().items() if not k.startswith('__'))
+    return dict((k, v) for k,v in list(locals().items()) if not k.startswith('__'))
 
 def result2section(d):
     return '\n'.join('<h3>%s</h3><pre>%s</pre>'%(k, v) for k, v in d)

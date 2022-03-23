@@ -25,4 +25,4 @@ def magic_pyexpr(ns, cmd, args, kw):
 
 @MagicMap.regist
 def magic_pysuite(ns, cmd, args, kw):
-    exec cmd in globals(), ns_leaf(ns)
+    exec(cmd, globals(), ns_leaf(ns))

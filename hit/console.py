@@ -1,4 +1,5 @@
 import repl
+from functools import reduce
 CompHook = Hook()
 class ConsoleInterp(repl.BaseInterp):
     def __init__(self, env):
@@ -47,7 +48,7 @@ def comp_ndict(prefix, prefix2, locals, globals):
         d = dict_updated(locals, **globals)
     if type(d) != dict:
         d = {}
-    return ['%s%s'%(dir_path and '%s.'%(dir_path) or '', type(v) == dict and '%s.'%(k) or k) for k,v in d.items() if not k.startswith('_')]
+    return ['%s%s'%(dir_path and '%s.'%(dir_path) or '', type(v) == dict and '%s.'%(k) or k) for k,v in list(d.items()) if not k.startswith('_')]
 
 def reload_console(**kw):
     os.execl(sys.argv[0], *sys.argv)

@@ -4,7 +4,7 @@ import itertools
 
 id = itertools.count(0)
 def gen_path(pat):
-    return pat.replace('%', str(id.next()))
+    return pat.replace('%', str(next(id)))
 
 def remove(rexp):
     for f in os.listdir('.'):
