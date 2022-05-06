@@ -65,6 +65,8 @@ class Load:
                 on_file_not_find(path)
                 continue
             rpath, content = res
+            if type(content) == bytes:
+                content = content.decode('utf-8')
             self.load_list.append(rpath)
             self.on_load(path, rpath, content)
             myexec(compile(self.parse(content, **self.opt), rpath, mode='exec'), self.env)
