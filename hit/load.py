@@ -3,7 +3,7 @@ class Fail(Exception):
     def __init__(self, msg, obj=None):
         self.msg, self.obj = msg, obj
     def __repr__(self):
-        return 'Fail: {} {}'.format(self.msg, self.obj != None and pprint.pformat(self.obj) or '')
+        return 'Fail: {0} {1}'.format(self.msg, self.obj != None and pprint.pformat(self.obj) or '')
     def __str__(self):
         return repr(self)
 
@@ -29,7 +29,7 @@ class CallerInfo:
         finally:
             del frame
     def __repr__(self):
-        return 'file={} lineno={} func={} code={}'.format(self.filename, self.lineno, self.function, self.code)
+        return 'file={0} lineno={1} func={2} code={3}'.format(self.filename, self.lineno, self.function, self.code)
 
 def myexec(stmt, env=globals()):
      exec(stmt, env)
@@ -65,6 +65,8 @@ class Load:
                 on_file_not_find(path)
                 continue
             rpath, content = res
+            if type(content) == bytes:
+                content = content.decode('utf-8')
             self.load_list.append(rpath)
             self.on_load(path, rpath, content)
             myexec(compile(self.parse(content, **self.opt), rpath, mode='exec'), self.env)

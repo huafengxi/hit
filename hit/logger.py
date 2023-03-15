@@ -8,13 +8,13 @@ def get_caller(depth=1):
     caller = ''
     try:
         frame, filename, lineno, function, code_ctx, index = inspect.stack()[depth]
-        caller = '{}:{} {}:'.format(os.path.basename(filename), lineno, function)
+        caller = '{0}:{1} {2}:'.format(os.path.basename(filename), lineno, function)
     finally:
         del frame
     return caller
 
 def header(depth):
-    return '{} {} '.format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"), get_caller(depth))
+    return '{0} {1} '.format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"), get_caller(depth))
 
 def log_format(msg, args):
     if not args: return msg

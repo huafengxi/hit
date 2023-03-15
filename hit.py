@@ -65,6 +65,7 @@ def hit_run(argv):
     def print_result(x):
         if x == None: pass
         elif type(x) == str: do_print(x)
+        elif type(x) == bytes: do_print(x.decode('utf-8'))
         else: do_print(pprint.pformat(x))
     args, kw = parse_cmd_args(exec_stmt_in_argv(argv))
     args = [x for x in args if x not in special_opts]

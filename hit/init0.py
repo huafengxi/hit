@@ -1,5 +1,5 @@
-load.spath.extend('h,$base/h'.split(','))
 load.spath.append(os.path.expanduser('~/.hit'))
+load.spath.extend('h,$base/h'.split(','))
 load('entry,ish,call,interp,console')
 load('ndict,str_sub,line_match,magic_map,popen,misc-deps,magic_ctrl,magic_action,core_utils')
 load('utils,async,flow,spec_load,host')
