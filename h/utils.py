@@ -65,28 +65,27 @@ class StatReport:
             self.cost_time, self.count = 0.0, 0.0
             self.last_report = cur #(_log_=0)
 
-def genconf(tpl_file, target_file, env):
-    tpl_file, target_file = sub(tpl_file, env), sub(target_file, env)
+def genconf(tpl_file, target_file, ns):
+    tpl_file, target_file = sub(tpl_file, ns), sub(target_file, ns)
     try:
         tpl = open(tpl_file).read()
     except IOError as e:
         raise Fail('read %s fail'%(tpl_file))
     try:
-        open(target_file, 'w').write(sub(tpl, env))
+        open(target_file, 'w').write(sub(tpl, ns))
     except IOError as e:
         raise Fail('write %s fail'%(target_file))
     return target_file
 
 @MagicMap.regist
-def magic_genconf(d, cmd, args, kw):
+def magic_genconf(ns, cmd, args, kw):
     cmd_list = shlex.split(cmd)
     _args, _kw = parse_cmd_args(cmd_list)
-    env = dict_updated(d, kw, _kw)
     def get_tpl_name(p): return ':' in p and p.split(':', 1) or (p, p + '.tpl')
     def conf_wrapper(p, env):
         target, tpl = get_tpl_name(p)
-        return genconf(tpl, target, env)
-    return [conf_wrapper(p, env) for p in _args]
+        return genconf(tpl, target, ns)
+    return [conf_wrapper(p, ns) for p in _args]
 
 @MagicMap.regist
 def magic_choose(d, cmd, args, kw):
