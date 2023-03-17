@@ -1,13 +1,17 @@
 import itertools
 import copy
 
+def efind_base(ns, k):
+    for name, env in ns:
+        if k in env: return env
+
 def efind(ns, path):
     ns = copy.copy(ns)
     '''example input: ns=[(top, global()] path='a.b.c' '''
     if not path: return ns, None
     def search_key(ns, k):
-        for name,env in ns:
-            if k in env: return env[k]
+        env = efind_base(ns, k)
+        return env[k] if env != None else None
     for key in filter(None, path.split('.')):
         d = search_key(ns, key)
         ns.insert(0, (key, d))
