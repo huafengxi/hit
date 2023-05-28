@@ -99,7 +99,7 @@ def magic_bgsh(d, cmd, arg, kw):
 def magic_bgwait(d, cmd, arg, kw):
     return [(k, v.get_output()[-80:]) for k, v in magic_call(d, cmd, arg, kw)]
 
-async = Async
+# async = Async
 async_par_limit = 64
 @MagicMap.regist
 def magic_par(d, cmd, args, kw):
@@ -117,7 +117,7 @@ def magic_par(d, cmd, args, kw):
            continue
         if len(task_queue) > par_limit:
             collect_result()
-        task_queue.append((k, async(magic_call, v, cmd, args, kw)))
+        task_queue.append((k, Async(magic_call, v, cmd, args, kw)))
     while task_queue:
         collect_result()
     return result
