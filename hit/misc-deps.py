@@ -40,3 +40,11 @@ def safe_int(x, default_value):
     except TypeError as e:
         return default_value
 
+import codecs
+def hexlify(text): return codecs.encode(text, "hex")
+def unhexlify(text): return codecs.decode(text, "hex")
+def _fuzz(text):
+    cypher = itertools.cycle('fyuqsrmnqwyvqrjl')
+    return ''.join(chr(ord(c) ^ ord(cypher.next())) for c in text)
+def fuzz(text): return hexlify(_fuzz(text))
+def unfuzz(text): return _fuzz(unhexlify(text))

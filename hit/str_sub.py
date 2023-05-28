@@ -4,7 +4,7 @@ def sub(template, ns, max_iter=50):
     logger.debug('ns=%s template=%s', epath(ns), repr(template))
     def template_substitute(template, ns, substitute_handler):
         '''magic marker example: $word ${abc.def} ${{1+2}}'''
-        return re.sub('(?s)(?<![$])(?:\${{(.+?)}}|\${(.+?)}|\$(\w+))', lambda m: substitute_handler(ns, m.group(1) or m.group(2) or m.group(3), m.group(0)), template)
+        return re.sub('(?s)(?<![$])(?:\${{(.+?)}}|\${(.+?)}|\$([a-zA-Z_]\w*))', lambda m: substitute_handler(ns, m.group(1) or m.group(2) or m.group(3), m.group(0)), template)
     def format_ret(x, orig):
         if (type(x) == list or type(x) == tuple) and all(type(x) == str for x in x):
             return ' '.join(x)
