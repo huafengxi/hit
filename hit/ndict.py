@@ -5,6 +5,10 @@ def efind_base(ns, k):
     for name, env in ns:
         if k in env: return env
 
+class NDVKey:
+    def getv(ns): pass
+class NDHook:
+    def onload(ns): pass
 def efind(ns, path):
     ns = copy.copy(ns)
     '''example input: ns=[(top, global()] path='a.b.c' '''
@@ -14,6 +18,8 @@ def efind(ns, path):
         return env[k] if env != None else None
     for key in filter(None, path.split('.')):
         d = search_key(ns, key)
+        if isinstance(d, NDVKey):
+            d = d.getv(ns)
         ns.insert(0, (key, d))
         if type(d) != dict:
             break
@@ -27,39 +33,37 @@ def ns_leaf(ns): return ns[0][1]
 def ns_add(ns, k, v): return [(k,v)] + ns
 def ns_leaf_key(ns): return ns[0][0]
 
-def _call_hook(global_dict, hook_name):
+def _call_hook(global_dict):
     ns, cur_dict_set = [], set()
-    def handle_dict(ns, d, k='top'):
+    def handle_dict(ns):
+        k, d = ns[0]
         if type(d) != dict: return
         if id(d) in cur_dict_set: return
         cur_dict_set.add(id(d))
-        ns.insert(0, (k, d))
-        hook = d.get(hook_name, None)
-        if callable(hook):
-            logger.trace("call after_load hook for %s", epath(ns))
-            hook(ns)
+        hooks = []
         for (k, v) in d.items():
-            if k[0] != '_': handle_dict(ns, v, k)
-        ns.pop(0)
-    handle_dict([], global_dict, 'top')
+            if isinstance(v, NDHook):
+                hooks.append(k)
+            if k[0] != '_': handle_dict([(k,v)] + ns)
+        for k in sorted(hooks):
+            hook = d.get(k)
+            hook.onload(ns)
+    handle_dict([('top', global_dict)])
 
-def collect_keys(d, is_match):
-    done_set = set()
-    def _collect_keys(d, is_match):
-        if type(d) != dict or id(d) in done_set: return set()
-        done_set.add(id(d))
-        key_set = set(k for k in d.keys() if is_match(k))
-        for v in d.values():
-            key_set |= collect_keys(v, is_match)
-        return key_set
-    return _collect_keys(d, is_match)
+# def collect_keys(d, is_match):
+#     done_set = set()
+#     def _collect_keys(d, is_match):
+#         if type(d) != dict or id(d) in done_set: return set()
+#         done_set.add(id(d))
+#         key_set = set(k for k in d.keys() if is_match(k))
+#         for v in d.values():
+#             key_set |= collect_keys(v, is_match)
+#         return key_set
+#     return _collect_keys(d, is_match)
 
 @AfterLoad.regist
 def after_load_call_hook():
-    def is_match(k): return k.startswith('ndict_after_load')
-    keys = collect_keys(globals(), is_match)
-    for k in sorted(keys):
-        _call_hook(globals(), k)
+    _call_hook(globals())
 
 def build_dict(*args, **kw):
     def dict_filter(f, d):
