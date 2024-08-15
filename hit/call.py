@@ -47,7 +47,7 @@ def prepare_func_kwargs(func, args, ns, kw):
     return new_kw
 
 def call_handle_target(ns, target, args, kw):
-    if type(target) == str: target = sub(target, ns_add(ns, 'call_kw', kw))
+    if type(target) == str: target = sub(target, ns_add(ns, '__call_kw_helper', kw))
     if callable(target):
         result = target(*args, **prepare_func_kwargs(target, args, ns, kw))
     elif type(target) == str:
