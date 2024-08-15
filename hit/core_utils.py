@@ -7,3 +7,4 @@ def find_from_top(d, path): return efind_value([('top', d)], path)
 def find(d, path): return efind_value(d['__rc__']['ns'], path) if id(globals()) != id(d) else find_from_top(d, path)
 def find_base(d, k): return efind_base(d2ns(d), k)
 def sub2(tpl, d): return sub(tpl, d2ns(d))
+def get_self_name(**__kw): return d2ns(__kw)[0][0]
