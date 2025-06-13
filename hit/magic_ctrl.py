@@ -20,7 +20,7 @@ def magic_tryloop(ns, cmd, args, kw):
 
 @MagicMap.regist
 def magic_seq(ns, cmd_list, args, kw):
-    cmd_seq = [(cmd, arg and parse_cmd_args(arg.split(',')) or ([],{})) for cmd, arg in re.findall('([0-9a-zA-Z._]+)(?:\[(.*?)\])?', cmd_list)]
+    cmd_seq = [(cmd, arg and parse_cmd_args(arg.split(',')) or ([],{})) for cmd, arg in re.findall(r'([0-9a-zA-Z._]+)(?:\[(.*?)\])?', cmd_list)]
     return [(cmd, CALL(ns, cmd, (_args + list(args)), dict_updated(_kw, kw))) for cmd, (_args,_kw) in cmd_seq]
 
 @MagicMap.regist

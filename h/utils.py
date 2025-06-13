@@ -89,7 +89,7 @@ def magic_genconf(ns, cmd, args, kw):
 
 @MagicMap.regist
 def magic_choose(d, cmd, args, kw):
-    seq = re.findall('(\w+):(\S+)', cmd)
+    seq = re.findall(r'(\w+):(\S+)', cmd)
     cmd_map = dict(seq)
     cmd_list, result = [], []
     for c in args:

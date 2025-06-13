@@ -12,13 +12,13 @@ except ImportError:
 import atexit
 import traceback
 import pprint
-import parser
 import subprocess
 import copy
 import tfile
 
+import ast
 def parse_expr(expr):
-    try: return parser.expr(expr)
+    try: return ast.parse(expr, mode='eval')
     except: pass
 
 class BaseInterp:

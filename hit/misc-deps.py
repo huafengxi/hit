@@ -13,7 +13,7 @@ def list_merge(ls):
 
 def expand(spec):
     def multiple_expand(str):
-        return [''.join(parts) for parts in itertools.product(*[re.split('[ ,]+', i) for i in re.split('\[(.*?)\]', str)])]
+        return [''.join(parts) for parts in itertools.product(*[re.split('[ ,]+', i) for i in re.split(r'\[(.*?)\]', str)])]
     return list_merge(map(multiple_expand, spec.split()))
 
 def str2alphanum(x):

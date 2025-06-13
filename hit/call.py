@@ -14,8 +14,8 @@ def CALL(ns, p, args, kw):
     logger.trace('find: %s: %s func=%s', epath(ns2), p, repr(target))
     return call_handle_target(ns2, target, args, kw)
 
-def is_magic_str(x): return re.match('!\w+(\[.*\])?:', x)
-def is_dot_chain(path): return all(re.match('[_a-zA-Z]\w*$', x) for x in path.split('.'))
+def is_magic_str(x): return re.match(r'!\w+(\[.*\])?:', x)
+def is_dot_chain(path): return all(re.match(r'[_a-zA-Z]\w*$', x) for x in path.split('.'))
 def call_find_target(ns, path):
     if is_magic_str(path): return ns, path
     try: return ns, eval(path, globals(), prepare_eval_env(ns))
@@ -59,7 +59,7 @@ def call_handle_target(ns, target, args, kw):
 
 MagicMap = FuncMap()
 def magic_str(ns, str, args, kw):
-    m = re.match('!(\w+)(?:\[(.*)\])?:(.*)', str)
+    m = re.match(r'!(\w+)(?:\[(.*)\])?:(.*)', str)
     if not m: return str
     handler_name, handler_args, str_content = m.groups()
     handler = MagicMap.get('magic_' + handler_name, None)

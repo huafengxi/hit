@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8-unix -*-
 '''
 * general
@@ -33,7 +33,7 @@ load = Load(env=globals(), parse=idf, base_path=_hit_path_, spath='.,$base,$base
 
 import re
 def parse_cmd_args(args):
-    return [i for i in args if not re.match('^\w+=', i)], dict(i.split('=', 1) for i in args if re.match('^\w+=', i))
+    return [i for i in args if not re.match(r'^\w+=', i)], dict(i.split('=', 1) for i in args if re.match(r'^\w+=', i))
 
 import pprint
 from logger import logger
@@ -51,7 +51,7 @@ def hit_run(argv):
             try: return eval(x)
             except: return x
         def exec_stmt(x):
-            m = re.match('@(\w+)=(.*)', x)
+            m = re.match(r'@(\w+)=(.*)', x)
             if m:
                 globals()[m.group(1)] = safe_eval(m.group(2))
             else:

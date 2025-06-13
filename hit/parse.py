@@ -6,10 +6,10 @@ import sys
 import os
 import re
 
-import parser
+import ast
 def is_pystmt(text):
     try:
-        return parser.suite(text)
+        return ast.parse(text)
     except SyntaxError as e:
         return None
 
@@ -27,7 +27,7 @@ def get_attr(cmd, code):
         return re.sub('(#.*$)?', '', code)
     def parse_attr(code):
         attr = {}
-        m = re.match('.*\#\((.*)\)$', code)
+        m = re.match(r'.*\#\((.*)\)$', code)
         if m:
             try:
                 attr = eval('dict(%s)'%(m.group(1)))
@@ -45,7 +45,7 @@ def escape(text, wrap_tpl, comment_char='#'):
     if not comment_char:
         return re.sub('(?s)^( *)(.*?)$', lambda m: m.group(1) + do_escape(m.group(2)), text)
     else:
-        return re.sub('(?s)^( *)(.*?)((?: *{}.*)|(?:\s+)?)$'.format(comment_char), lambda m: m.group(1) + do_escape(m.group(2)) + m.group(3), text)
+        return re.sub(r'(?s)^( *)(.*?)((?: *{}.*)|(?:\s+)?)$'.format(comment_char), lambda m: m.group(1) + do_escape(m.group(2)) + m.group(3), text)
 class PyMixFormater:
     def __init__(self, wrap_tpl, comment_char='#'):
         self.wrap_tpl, self.comment_char = wrap_tpl, comment_char

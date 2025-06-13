@@ -40,7 +40,7 @@ def Host(ip, **__kw):
     netdev = "!sshp: ifconfig |grep '^eth' |sed -n 1p |awk '{print $1}'"
     netspeed = "!sshsudo: ethtool $netdev |grep Speed | awk '{print $2}'"
     clock = "!sshp: cat /sys/devices/system/clocksource/clocksource0/current_clocksource"
-    hugepage = "!sshp: cat /sys/kernel/mm/redhat_transparent_hugepage/enabled |grep -o '\[.*\]'"
+    hugepage = r"!sshp: cat /sys/kernel/mm/redhat_transparent_hugepage/enabled |grep -o '\[.*\]'"
     kernel = "!sshp: uname -r |grep -o 'el[0-9]'"
     load = "!sshp: uptime | grep -o 'load average: .*' "
     raid = "!sshsudo: MegaCli64 -LdPdInfo -aAll |grep 'Current Cache Policy' | grep -o 'Write[A-Z][a-zA-Z]*' | tr '\\n' ' '"
