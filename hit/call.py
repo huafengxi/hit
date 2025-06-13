@@ -26,10 +26,32 @@ def call_find_target(ns, path):
 
 import inspect
 import types
+from collections import namedtuple
+OldArgSpec = namedtuple('OldArgSpec', ['args', 'varargs', 'keywords', 'defaults'])
+def getargspec_shim(func):
+    sig = inspect.signature(func)
+    args = []
+    varargs = None
+    varkw = None # 'keywords' in getargspec
+    defaults = []
+
+    for param in sig.parameters.values():
+        if param.kind in (inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD):
+            args.append(param.name)
+            if param.default is not inspect.Parameter.empty:
+                defaults.append(param.default)
+        elif param.kind == inspect.Parameter.VAR_POSITIONAL:
+            varargs = param.name
+        elif param.kind == inspect.Parameter.VAR_KEYWORD:
+            varkw = param.name
+        # getargspec ignored KEYWORD_ONLY arguments
+
+    return OldArgSpec(args, varargs, varkw, tuple(defaults) if defaults else None)
+
 def prepare_func_kwargs(func, args, ns, kw):
     if isinstance(func, types.BuiltinFunctionType):
         return {}
-    spec = inspect.getargspec(func)
+    spec = getargspec_shim(func)
     if len(spec.args) < len(args) and not spec.varargs:
         raise Exception("too many args for {}, given arg num: {}".format(spec.args, len(args)))
     new_kw = {}
