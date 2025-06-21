@@ -18,7 +18,7 @@ def INTERP(rc, cmd, args, kw):
     cmd = sub(cmd, rc['ns']).strip()
     if re.match(r'^\s*$', cmd) or re.match(r'^\s*#', cmd): return cmd
     func = LineMatch.match(dict(kw=kw, args=args, cmd=cmd, head=get_head(cmd), rc=rc))
-    logger.trace('cmd=%s caller=%s code=%s ctx=%s func=%s', repr(cmd), rc['caller'], repr(rc['code']), rc.get('ctx'), func)
+    logger.info('cmd=%s caller=%s code=%s ctx=%s func=%s', repr(cmd), rc['caller'], repr(rc['code']), rc.get('ctx'), func)
     return MagicMap.get('magic_' + func)(rc['ns'], cmd, args, kw)
 
 def interp(*args, **kw):
