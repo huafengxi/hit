@@ -29,6 +29,25 @@ def magic_sh(ns, cmd, args, kw):
 def magic_popen(ns, cmd, args, kw):
     return popen_wrapper(prepare_popen_ns(ns, args, kw),  cmd, output=True, **kw)
 
+@MagicMap.regist
+def magic_bg(ns, cmd, args, kw):
+    def redirect_stdout(filename):
+        fd_out = os.open(filename, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
+        os.dup2(fd_out, sys.stdout.fileno())
+        os.dup2(fd_out, sys.stderr.fileno())
+        if fd_out > 2: # Don't close 0, 1, or 2 if somehow fd_out was one of them
+            os.close(fd_out)
+    pid = os.fork()
+    if pid < 0:
+        raise Fail("fork fail")
+    if pid > 0:
+        return pid
+    os.setpgrp()
+    name = kw.get('name', 'bg')
+    redirect_stdout(f'log/{name}.log')
+    magic_call(ns, cmd, args, kw)
+    sys.exit(0)
+
 def make_ssh_cmd(ns):
     return 'ssh {} -6 $usr@$ip%$dev' if efind_value(ns, 'ip').startswith('fe80:') else 'ssh {} $usr@$ip'
 @MagicMap.regist

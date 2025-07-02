@@ -15,7 +15,7 @@ def popen_unix(cmd, input, output, timeout):
     p = subprocess.Popen(cmd, shell=True, stdin=input and subprocess.PIPE or None, stdout=output and subprocess.PIPE or None, stderr=subprocess.STDOUT, env=env, executable='/bin/bash')
     out = p.communicate(input=input, timeout=timeout)[0]
     ret = p.returncode
-    return out, ret
+    return out.decode('utf-8'), ret
 
 if os.name == 'nt':
     popen_mos = popen_win32
