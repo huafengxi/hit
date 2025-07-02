@@ -14,8 +14,10 @@ def popen_unix(cmd, input, output, timeout):
     env = dict_updated(os.environ, BASH_ENV=hit_file_path('h/sh.rc'))
     p = subprocess.Popen(cmd, shell=True, stdin=input and subprocess.PIPE or None, stdout=output and subprocess.PIPE or None, stderr=subprocess.STDOUT, env=env, executable='/bin/bash')
     out = p.communicate(input=input, timeout=timeout)[0]
+    if type(out) == bytes:
+        out = out.decode('utf-8')
     ret = p.returncode
-    return out.decode('utf-8'), ret
+    return out, ret
 
 if os.name == 'nt':
     popen_mos = popen_win32
